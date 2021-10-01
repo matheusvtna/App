@@ -12,7 +12,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var actuactorSlider: UISlider!
     @IBOutlet weak var percentageLabel: UILabel!
     
-    var communicationSettings: CommunicationSettings = CommunicationSettings()
+    var communicationSettings: CommunicationSettings = CommunicationSettings.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()

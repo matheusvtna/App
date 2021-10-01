@@ -13,76 +13,34 @@ enum CommunicationType: Int {
 }
 
 class CommunicationSettings {
-    static var shared = CommunicationSettings()
     
-    let defaults = UserDefaults.standard
+    static let shared: CommunicationSettings = {
+        let instance = CommunicationSettings()
+        return instance
+    }()
     
-    var serverName: String {
-        get {
-            return self.serverName
-        }
-        
-        set(newServer){
-            self.serverName = newServer
-        }
-    }
+    var serverName: String
+    var port: Int
+    var endpoint: String
+    var type: CommunicationType
+    var url: String
     
-    var port: Int {
-        get {
-            return self.port
-        }
-        
-        set(newPort){
-            self.port = newPort
-        }
-    }
-    
-    var endpoint: String {
-        get {
-            return self.endpoint
-        }
-        
-        set(newEndpoint){
-            self.endpoint = newEndpoint
-        }
-    }
-    
-    var type: CommunicationType {
-        get {
-            return self.type
-        }
-        set(newType) {
-            self.type = newType
-        }
-    }
-    
-    var url: String {
-        get {
-            return self.url
-        }
-        set(newURL) {
-            self.url = newURL
-        }
-    }
-    
-    init() {
+    private init() {
+        let defaults = UserDefaults.standard
+
         self.type = defaults.object(forKey: "commType") as? CommunicationType ?? CommunicationType.HTTP
         self.serverName = defaults.object(forKey: "commServer") as? String ?? "localhost"
         self.port = defaults.object(forKey: "commPort") as? Int ?? 80
         self.endpoint = defaults.object(forKey: "commEndpoint") as? String ?? ""
-        self.url = getResourceURL()
+        self.url = "http://\(serverName):\(port)/\(endpoint)"
     }
     
-    init(type: CommunicationType, serverName: String, port: Int, endpoint: String) {
+    private init(type: CommunicationType, serverName: String, port: Int, endpoint: String) {
         self.type = type
         self.serverName = serverName
         self.port = port
         self.endpoint = endpoint
-        self.url = getResourceURL()
-    }
-    
-    func getResourceURL() -> String {
-        return "http://\(serverName):\(port)/\(endpoint)"
+        self.url = "http://\(serverName):\(port)/\(endpoint)"
     }
     
 }
