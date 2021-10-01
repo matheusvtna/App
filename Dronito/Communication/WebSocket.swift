@@ -39,15 +39,19 @@ class WebSocketCommunication: CommunicationProtocol {
 
         let message = URLSessionWebSocketTask.Message.data(data)
         webSocketTask.send(message) { error in
-            if let error = error {
-                print("WebSocket sending error: \(error)")
+            if let _ = error {
+                completion(.failure(.sendingError))
+                return
             }
+            
+            completion(.success(content))
         }
         
     }
     
     func receive(completion: @escaping (Result<Message, CommunicationError>) -> Void) {
-        print("oi")
+        print("WebSocket's receive function is not implemented")
+        completion(.failure(.responseError))
     }
     
     

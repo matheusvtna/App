@@ -15,51 +15,71 @@ class Communication {
     }
     
     func send(content: Message) {
+        
+        guard let url = URL(string: settings.url) else {
+            print("Invalid URL from: \(settings.url)")
+            return
+        }
+        
         switch self.settings.type {
         case .HTTP:
-            guard let url = URL(string: settings.url) else {
-                print("Invalid URL from: \(settings.url)")
-                return
-            }
             let http = HTTPCommunication(url: url)
-            http.send(content: content, completion: { result in
+            http.send(content: content, completion: {result in
                 switch result {
                 case .success(let message):
-                    print("The following message has been sent: \(message.value)")
+                    print("The following message has been sent: \(message.value) through HTTP")
                     
                 case .failure(let error):
-                    print("An error occured \(error)")
+                    print("An error occured on send: \(error)")
                 }
-                
             })
             break
         case .WebSocket:
-            // socket
+            let socket = WebSocketCommunication(url: url)
+            socket.send(content: content, completion: { result in
+                switch result{
+                case .success(let message):
+                    print("The following message has been sent: \(message.value) through WebSocket")
+                    break
+                case .failure(let error):
+                    print("An error occured on send: \(error)")
+                    break
+                }                
+            })
             break
         }
     }
     
     func receive() {
+        guard let url = URL(string: settings.url) else {
+            print("Invalid URL from: \(settings.url)")
+            return
+        }
+        
         switch self.settings.type {
         case .HTTP:
-            guard let url = URL(string: settings.url) else {
-                print("Invalid URL from: \(settings.url)")
-                return
-            }
             let http = HTTPCommunication(url: url)
             http.receive(completion: { result in
                 switch result {
                 case .success(let message):
-                    print("The following message has been sent: \(message.value)")
+                    print("The following message has been received: \(message.value) through HTTP")
                     
                 case .failure(let error):
-                    print("An error occured \(error)")
+                    print("An error occured on HTTP receive: \(error)")
                 }
                 
             })
             break
         case .WebSocket:
-            // socket
+            let socket = WebSocketCommunication(url: url)
+            socket.receive(completion: { result in
+                switch result {
+                case .success(let message):
+                    print("The following message has been received: \(message.value) through WebSocket")
+                    
+                case .failure(let error):
+                    print("An error occured on WebSocket receive: \(error)")
+                }})
             break
         }
     }
@@ -75,6 +95,6 @@ enum CommunicationError: Error {
     case decodingError
     case encodingError
     case urlError
-    case protocolError
+    case sendingError
 }
 
