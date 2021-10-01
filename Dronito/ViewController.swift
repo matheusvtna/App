@@ -9,19 +9,32 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var ledButton: UIButton!
-    var ledStatus: Bool = false
+    @IBOutlet weak var actuactorSlider: UISlider!
+    @IBOutlet weak var percentageLabel: UILabel!
+    
     var communicationSettings: CommunicationSettings = CommunicationSettings()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
+        self.actuactorSlider.minimumValue = 0
+        self.actuactorSlider.maximumValue = 100
+        
+        let value = Int(actuactorSlider.value)
+        self.percentageLabel.text = "\(value) %"
     }
     
-    @IBAction func changeLedStatus() {
-        self.ledStatus.toggle()
-    }
     
+    @IBAction func sliderValueChanged() {
+        let value = Int(actuactorSlider.value)
+        self.percentageLabel.text = "\(value) %"
+        
+        let message = Message(value: value)
+        let api = Communication(settings: communicationSettings)
+        api.send(content: message)
+        
+    }
     
     
     @IBAction func sendMessage() {
