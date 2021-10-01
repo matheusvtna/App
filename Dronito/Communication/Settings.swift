@@ -71,12 +71,6 @@ class CommunicationSettings {
         self.port = defaults.object(forKey: "commPort") as? Int ?? 80
         self.endpoint = defaults.object(forKey: "commEndpoint") as? String ?? ""
         self.url = getResourceURL()
-
-//        do {
-//            self.url = try getResourceURL()
-//        } catch {
-//            print("Invalid URL from: \(serverName):\(port)/\(endpoint)")
-//        }
     }
     
     init(type: CommunicationType, serverName: String, port: Int, endpoint: String) {
@@ -85,19 +79,10 @@ class CommunicationSettings {
         self.port = port
         self.endpoint = endpoint
         self.url = getResourceURL()
-        
-//        do {
-//            self.url = try getResourceURL()
-//        } catch {
-//            print("Invalid URL from: \(serverName):\(port)/\(endpoint)")
-//        }
     }
     
     func getResourceURL() -> String {
         return "http://\(serverName):\(port)/\(endpoint)"
-//        let resourceURL = "http://\(serverName):\(port)/\(endpoint)"
-//        guard let resourceURL = URL(string: resourceString) else { throw CommunicationError.urlError }
-//        return resourceURL
     }
     
 }
