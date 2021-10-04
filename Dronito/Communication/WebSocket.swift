@@ -28,23 +28,21 @@ class WebSocketCommunication: CommunicationProtocol {
         let webSocketTask = urlSession.webSocketTask(with: self.request)
         webSocketTask.resume()
         
+        
         do {
-            let json = try JSONEncoder().encode(content)
-            
-            do {
-                let data =  try JSONSerialization.data(withJSONObject: json, options: JSONSerialization.WritingOptions.prettyPrinted)
-                guard let convertedString = String(data: data, encoding: String.Encoding.utf8) else { completion(.failure(.encodingError)) ; return }
-                
-                let message = URLSessionWebSocketTask.Message.string(convertedString)
-                webSocketTask.send(message) { error in
-                    if let _ = error {
-                        completion(.failure(.sendingError))
-                        return
-                    }
-                    
-                    completion(.success(content))
+            let jsonData = try JSONEncoder().encode(content)
+            guard let json = String(data: jsonData, encoding: String.Encoding.utf16) else { completion(.failure(.encodingError)) ; return}
+                        
+            let message = URLSessionWebSocketTask.Message.string(json)
+            webSocketTask.send(message) { error in
+                if let _ = error {
+                    completion(.failure(.sendingError))
+                    return
                 }
+                
+                completion(.success(content))
             }
+            
         } catch {
             completion(.failure(.encodingError))
             return
