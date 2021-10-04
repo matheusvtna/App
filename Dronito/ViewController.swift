@@ -23,11 +23,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var commTypeControl: UISegmentedControl!
     
+    @IBOutlet weak var commStatusLabel: UILabel!
+    
     var communicationSettings: CommunicationSettings = CommunicationSettings.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
         ipTextField.delegate = self
         portTextField.delegate = self
         endpointTextField.delegate = self
@@ -48,22 +50,25 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         let typeIndex = commTypeControl.selectedSegmentIndex
         switch typeIndex {
-            case 0:
-                communicationSettings.type = .HTTP
-                break
-            case 1:
-                communicationSettings.type = .WebSocket
-                break
-            default:
-                break
+        case 0:
+            communicationSettings.type = .HTTP
+            break
+        case 1:
+            print("socket")
+            //communicationSettings.type = .WebSocket
+            break
+        default:
+            break
         }
+        
+        checkURL()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         let defaults = UserDefaults.standard
-
+        
         let ip: String = ipTextField.text ?? "localhost"
         let port: Int = Int(portTextField.text ?? "80") ?? 80
         let endpoint:String = endpointTextField.text ?? ""
@@ -92,18 +97,22 @@ class ViewController: UIViewController, UITextFieldDelegate {
             defaults.set(endpoint, forKey: "commEndpoint")
             communicationSettings.endpoint = endpoint
         }
+        
+        checkURL()
     }
     
     @IBAction func commTypeChanged() {
         let defaults = UserDefaults.standard
         
         if commTypeControl.selectedSegmentIndex == 0 {
-            defaults.set(CommunicationType.HTTP, forKey: "commType")
+            defaults.set(CommunicationType.HTTP.rawValue, forKey: "commType")
             communicationSettings.type = .HTTP
         } else {
-            defaults.set(CommunicationType.WebSocket, forKey: "commType")
+            defaults.set(CommunicationType.WebSocket.rawValue, forKey: "commType")
             communicationSettings.type = .WebSocket
         }
+        
+        checkURL()
     }
     
     @IBAction func sliderValueChanged() {
@@ -118,8 +127,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     
     @IBAction func sendMessage() {
-        print("click")
-        
         let alertController = UIAlertController(title: "New message", message: "Enter a new message", preferredStyle: .alert)
         alertController.addTextField { textField in
             textField.placeholder = "Your message..."
@@ -132,11 +139,31 @@ class ViewController: UIViewController, UITextFieldDelegate {
             
             let api = Communication(settings: self.communicationSettings)
             api.send(content: message)
-                        
+            
         }))
         
         self.present(alertController, animated: true)
-
+        
+    }
+    
+    func checkURL() {
+        var canOpen = false
+        if let url = NSURL(string: communicationSettings.url ) {
+            canOpen = UIApplication.shared.canOpenURL(url as URL)
+        }
+        
+        let type = communicationSettings.type == .HTTP ? "HTTP" : "WebSocket"
+        var text = "Sending through " + type + "\n"
+        
+        if canOpen {
+            text += "Connected on \(communicationSettings.url)"
+            commStatusLabel.textColor = .green
+        } else {
+            text += "Cannot open \(communicationSettings.url)"
+            commStatusLabel.textColor = .red
+        }
+        
+        commStatusLabel.text = text
     }
 }
-                                                
+
