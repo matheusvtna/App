@@ -34,13 +34,14 @@ class CommunicationSettings {
             self.url = "http://\(serverName):\(port)/\(endpoint)"
         }
     }
-    var type: CommunicationType
+    var type: CommunicationType     
     var url: String
     
     private init() {
         let defaults = UserDefaults.standard
-
-        self.type = defaults.object(forKey: "commType") as? CommunicationType ?? CommunicationType.HTTP
+        
+        let typeValue = defaults.object(forKey: "commType") as? Int ?? 0
+        self.type = CommunicationType(rawValue: typeValue) ?? .HTTP
         self.serverName = defaults.object(forKey: "commServer") as? String ?? "localhost"
         self.port = defaults.object(forKey: "commPort") as? Int ?? 80
         self.endpoint = defaults.object(forKey: "commEndpoint") as? String ?? ""

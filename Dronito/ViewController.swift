@@ -44,21 +44,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.percentageLabel.text = "\(value) %"
         
         let defaults = UserDefaults.standard
+        
         ipTextField.text = defaults.object(forKey: "commServer") as? String ?? "localhost"
         portTextField.text = String(defaults.object(forKey: "commPort") as? Int ?? 80)
         endpointTextField.text = defaults.object(forKey: "commEndpoint") as? String ?? ""
         
-        let typeIndex = commTypeControl.selectedSegmentIndex
-        switch typeIndex {
-        case 0:
-            communicationSettings.type = .HTTP
-            break
-        case 1:
-            communicationSettings.type = .WebSocket
-            break
-        default:
-            break
-        }
+        let typeIndex = defaults.object(forKey: "commType") as? Int ?? commTypeControl.selectedSegmentIndex
+        communicationSettings.type = CommunicationType.init(rawValue: typeIndex)!
+        commTypeControl.selectedSegmentIndex = typeIndex
         
         checkURL()
     }
@@ -76,7 +69,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         defaults.set(ip, forKey: "commServer")
         defaults.set(port, forKey: "commPort")
         defaults.set(endpoint, forKey: "commEndpoint")
-        defaults.set(type, forKey: "commType")
+        defaults.set(type.rawValue, forKey: "commType")
     }
     
     @IBAction func okButtonClicked(_ sender: UIButton) {
@@ -150,17 +143,18 @@ class ViewController: UIViewController, UITextFieldDelegate {
         if let url = NSURL(string: communicationSettings.url ) {
             canOpen = UIApplication.shared.canOpenURL(url as URL)
         }
-        
-        let type = communicationSettings.type == .HTTP ? "HTTP" : "WebSocket"
-        var text = "Sending through " + type + "\n"
-        
+        var text = ""
         if canOpen {
-            text += "Connected on \(communicationSettings.url)"
+            text += "Connected on: \(communicationSettings.url)"
             commStatusLabel.textColor = .green
         } else {
-            text += "Cannot open \(communicationSettings.url)"
+            text += "Cannot open: \(communicationSettings.url)"
             commStatusLabel.textColor = .red
         }
+        
+        let type = communicationSettings.type == .HTTP ? "HTTP" : "WebSocket"
+        text += "\nSending through " + type
+
         
         commStatusLabel.text = text
     }
