@@ -19,9 +19,21 @@ class CommunicationSettings {
         return instance
     }()
     
-    var serverName: String
-    var port: Int
-    var endpoint: String
+    var serverName: String {
+        didSet {
+            self.url = "http://\(serverName):\(port)/\(endpoint)"
+        }
+    }
+    var port: Int {
+        didSet {
+            self.url = "http://\(serverName):\(port)/\(endpoint)"
+        }
+    }
+    var endpoint: String {
+        didSet {
+            self.url = "http://\(serverName):\(port)/\(endpoint)"
+        }
+    }
     var type: CommunicationType
     var url: String
     
