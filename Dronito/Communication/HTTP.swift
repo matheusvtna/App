@@ -10,7 +10,8 @@ import Foundation
 class HTTPCommunication: CommunicationProtocol {
     
     var resourceURL: URL
-        
+    var isAlive: Bool?
+    
     init(serverName: String, port: Int, endpoint: String) {
         let resourceString = "http://\(serverName):\(port)/\(endpoint)"
         guard let resourceURL = URL(string: resourceString) else { fatalError() }

@@ -9,13 +9,14 @@ import Foundation
 
 class Communication {
     var settings: CommunicationSettings
+    var socket: WebSocketCommunication?
+    var http: HTTPCommunication?
     
     init(settings: CommunicationSettings) {
-        self.settings = settings
+        self.settings = settings        
     }
     
     func send(content: Message) {
-        
         guard let url = URL(string: settings.url) else {
             print("Invalid URL from: \(settings.url)")
             return
@@ -23,8 +24,9 @@ class Communication {
         
         switch self.settings.type {
         case .HTTP:
-            let http = HTTPCommunication(url: url)
-            http.send(content: content, completion: { result in
+            socket?.close()
+            http?.resourceURL = url
+            http?.send(content: content, completion: { result in
                 switch result {
                 case .success(let message):
                     print("The following message has been sent: \(message.value) through HTTP")
@@ -35,8 +37,8 @@ class Communication {
             })
 
         case .WebSocket:
-            let socket = WebSocketCommunication(url: url)
-            socket.send(content: content, completion: { result in
+            socket = WebSocketCommunication(url: url)
+            socket?.send(content: content, completion: { result in
                 switch result{
                 case .success(let message):
                     print("The following message has been sent: \(message.value) through WebSocket")
@@ -83,9 +85,22 @@ class Communication {
 
         }
     }
+    
+    func isAlive() -> Bool {
+        switch self.settings.type {
+        case .HTTP:
+            if let _ = NSURL(string: settings.url ) {
+                return true
+            }
+            return false
+        case .WebSocket:
+            return socket?.isAlive ?? false
+        }
+    }
 }
 
 protocol CommunicationProtocol {
+    var isAlive: Bool? { get }
     func send(content: Message, completion: @escaping(Result<Message, CommunicationError>) -> Void);
     func receive(completion: @escaping(Result<Message, CommunicationError>) -> Void);
 }

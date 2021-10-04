@@ -7,10 +7,24 @@
 
 import Foundation
 
+class WebSocket: NSObject, URLSessionWebSocketDelegate {
+    
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+        print("Web Socket did connect")
+    }
+    
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
+        print("Web Socket did disconnect")
+    }
+}
+
 class WebSocketCommunication: CommunicationProtocol {
     
-    var request: URLRequest
+    //var request: URLRequest
     
+    var webSocketTask: URLSessionWebSocketTask
+    var isAlive: Bool?
+
     //    init(serverName: String, port: Int, endpoint: String) {
     //        let resourceString = "http://\(serverName):\(port)/\(endpoint)"
     //        guard let resourceURL = URL(string: resourceString) else { fatalError() }
@@ -20,19 +34,40 @@ class WebSocketCommunication: CommunicationProtocol {
     //    }
     
     init(url: URL) {
-        self.request = URLRequest(url: url)
+        let webSocketDelegate = WebSocket()
+        let session = URLSession(configuration: .default, delegate: webSocketDelegate, delegateQueue: OperationQueue())
+        isAlive = false
+        
+        webSocketTask = session.webSocketTask(with: url)
+        webSocketTask.resume()
+        ping()
+    }
+    
+    func ping() {
+        webSocketTask.sendPing { error in
+            if let error = error {
+                print("Error when sending PING \(error)")
+            } else {
+                print("Web Socket connection is alive")
+                self.isAlive = true
+                DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
+                    self.ping()
+                }
+            }
+        }
+    }
+    
+    func close() {
+        let reason = "Closing connection".data(using: .utf8)
+        webSocketTask.cancel(with: .goingAway, reason: reason)
+        self.isAlive = false
     }
     
     func send(content: Message, completion: @escaping (Result<Message, CommunicationError>) -> Void) {
-        let urlSession = URLSession(configuration: .default)
-        let webSocketTask = urlSession.webSocketTask(with: self.request)
-        webSocketTask.resume()
-        
-        
         do {
             let jsonData = try JSONEncoder().encode(content)
             guard let json = String(data: jsonData, encoding: String.Encoding.utf16) else { completion(.failure(.encodingError)) ; return}
-                        
+            
             let message = URLSessionWebSocketTask.Message.string(json)
             webSocketTask.send(message) { error in
                 if let _ = error {
@@ -51,9 +86,6 @@ class WebSocketCommunication: CommunicationProtocol {
     }
     
     func receive(completion: @escaping (Result<Message, CommunicationError>) -> Void) {
-        let urlSession = URLSession(configuration: .default)
-        let webSocketTask = urlSession.webSocketTask(with: self.request)
-        
         webSocketTask.receive { result in
             switch result {
             case .failure(_):
