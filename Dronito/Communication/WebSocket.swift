@@ -28,23 +28,26 @@ class WebSocketCommunication: CommunicationProtocol {
         let webSocketTask = urlSession.webSocketTask(with: self.request)
         webSocketTask.resume()
         
-        var data = Data()
-        
         do {
-            data = try JSONEncoder().encode(content)
-        }
-        catch {
-            completion(.failure(.encodingError))
-        }
-        
-        let message = URLSessionWebSocketTask.Message.data(data)
-        webSocketTask.send(message) { error in
-            if let _ = error {
-                completion(.failure(.sendingError))
-                return
-            }
+            let json = try JSONEncoder().encode(content)
             
-            completion(.success(content))
+            do {
+                let data =  try JSONSerialization.data(withJSONObject: json, options: JSONSerialization.WritingOptions.prettyPrinted)
+                guard let convertedString = String(data: data, encoding: String.Encoding.utf8) else { completion(.failure(.encodingError)) ; return }
+                
+                let message = URLSessionWebSocketTask.Message.string(convertedString)
+                webSocketTask.send(message) { error in
+                    if let _ = error {
+                        completion(.failure(.sendingError))
+                        return
+                    }
+                    
+                    completion(.success(content))
+                }
+            }
+        } catch {
+            completion(.failure(.encodingError))
+            return
         }
         
     }
@@ -79,7 +82,7 @@ class WebSocketCommunication: CommunicationProtocol {
                         completion(.failure(.encodingError))
                         
                     }
-    
+                    
                 @unknown default:
                     fatalError()
                 }
@@ -87,5 +90,5 @@ class WebSocketCommunication: CommunicationProtocol {
                 self.receive(completion: completion)
             }
         }
-    }        
+    }
 }
