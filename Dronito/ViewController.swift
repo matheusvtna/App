@@ -118,25 +118,25 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     
-    @IBAction func sendMessage() {
-        let alertController = UIAlertController(title: "New message", message: "Enter a new message", preferredStyle: .alert)
-        alertController.addTextField { textField in
-            textField.placeholder = "Your message..."
-        }
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Send", style: .default, handler: {_ in
-            guard let text = alertController.textFields?.first?.text else { print("No text available") ; return}
-            guard let value = Int(text) else { return }
-            let message = Message(value: value)
-            
-            let api = Communication(settings: self.communicationSettings)
-            api.send(content: message)
-            
-        }))
-        
-        self.present(alertController, animated: true)
-        
-    }
+//    @IBAction func sendMessage() {
+//        let alertController = UIAlertController(title: "New message", message: "Enter a new message", preferredStyle: .alert)
+//        alertController.addTextField { textField in
+//            textField.placeholder = "Your message..."
+//        }
+//        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+//        alertController.addAction(UIAlertAction(title: "Send", style: .default, handler: {_ in
+//            guard let text = alertController.textFields?.first?.text else { print("No text available") ; return}
+//            guard let value = Int(text) else { return }
+//            let message = Message(value: value)
+//
+//            let api = Communication(settings: self.communicationSettings)
+//            api.send(content: message)
+//
+//        }))
+//
+//        self.present(alertController, animated: true)
+//        
+//    }
     
     func checkURL() {
         var canOpen = false
@@ -145,15 +145,15 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         var text = ""
         if canOpen {
-            text += "Connected on: \(communicationSettings.url)"
+            text += "Connected on:\n\(communicationSettings.url)"
             commStatusLabel.textColor = .green
         } else {
-            text += "Cannot open: \(communicationSettings.url)"
+            text += "Cannot open:\n\(communicationSettings.url)"
             commStatusLabel.textColor = .red
         }
         
         let type = communicationSettings.type == .HTTP ? "HTTP" : "WebSocket"
-        text += "\nSending through " + type
+        text += "\n\nSending through " + type
 
         
         commStatusLabel.text = text
