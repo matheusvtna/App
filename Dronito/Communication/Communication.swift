@@ -24,7 +24,7 @@ class Communication {
         switch self.settings.type {
         case .HTTP:
             let http = HTTPCommunication(url: url)
-            http.send(content: content, completion: {result in
+            http.send(content: content, completion: { result in
                 switch result {
                 case .success(let message):
                     print("The following message has been sent: \(message.value) through HTTP")
@@ -33,20 +33,20 @@ class Communication {
                     print("An error occured on send: \(error)")
                 }
             })
-            break
+
         case .WebSocket:
             let socket = WebSocketCommunication(url: url)
             socket.send(content: content, completion: { result in
                 switch result{
                 case .success(let message):
                     print("The following message has been sent: \(message.value) through WebSocket")
-                    break
+
                 case .failure(let error):
                     print("An error occured on send: \(error)")
-                    break
+
                 }                
             })
-            break
+
         }
     }
     
@@ -69,7 +69,7 @@ class Communication {
                 }
                 
             })
-            break
+            
         case .WebSocket:
             let socket = WebSocketCommunication(url: url)
             socket.receive(completion: { result in
@@ -80,7 +80,7 @@ class Communication {
                 case .failure(let error):
                     print("An error occured on WebSocket receive: \(error)")
                 }})
-            break
+
         }
     }
 }

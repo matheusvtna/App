@@ -10,15 +10,15 @@ import Foundation
 class WebSocketCommunication: CommunicationProtocol {
     
     var request: URLRequest
-
-//    init(serverName: String, port: Int, endpoint: String) {
-//        let resourceString = "http://\(serverName):\(port)/\(endpoint)"
-//        guard let resourceURL = URL(string: resourceString) else { fatalError() }
-//
-//        self.request = URLRequest(url: resourceURL)
-//        self.request.timeoutInterval = 5
-//    }
-
+    
+    //    init(serverName: String, port: Int, endpoint: String) {
+    //        let resourceString = "http://\(serverName):\(port)/\(endpoint)"
+    //        guard let resourceURL = URL(string: resourceString) else { fatalError() }
+    //
+    //        self.request = URLRequest(url: resourceURL)
+    //        self.request.timeoutInterval = 5
+    //    }
+    
     init(url: URL) {
         self.request = URLRequest(url: url)
     }
@@ -36,7 +36,7 @@ class WebSocketCommunication: CommunicationProtocol {
         catch {
             completion(.failure(.encodingError))
         }
-
+        
         let message = URLSessionWebSocketTask.Message.data(data)
         webSocketTask.send(message) { error in
             if let _ = error {
@@ -50,9 +50,42 @@ class WebSocketCommunication: CommunicationProtocol {
     }
     
     func receive(completion: @escaping (Result<Message, CommunicationError>) -> Void) {
-        print("WebSocket's receive function is not implemented")
-        completion(.failure(.responseError))
-    }
+        let urlSession = URLSession(configuration: .default)
+        let webSocketTask = urlSession.webSocketTask(with: self.request)
+        
+        webSocketTask.receive { result in
+            switch result {
+            case .failure(_):
+                completion(.failure(.responseError))
+            case .success(let message):
+                switch message {
+                case .string(let text):
+                    guard let value = Int(text) else { completion(.failure(.decodingError)) ; return }
+                    let data = Message(value: value)
+                    completion(.success(data))
+                    
+                case .data(let data):
+                    do {
+                        let json = try JSONEncoder().encode(data)
+                        
+                        do {
+                            let messageData = try JSONDecoder().decode(Message.self, from: json)
+                            completion(.success(messageData))
+                        } catch {
+                            completion(.failure(.decodingError))
+                        }
+                        
+                    } catch {
+                        completion(.failure(.encodingError))
+                        
+                    }
     
-    
+                @unknown default:
+                    fatalError()
+                }
+                
+                self.receive(completion: completion)
+            }
+        }
+    }        
 }
