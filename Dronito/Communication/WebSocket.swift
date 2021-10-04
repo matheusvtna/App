@@ -11,13 +11,13 @@ class WebSocketCommunication: CommunicationProtocol {
     
     var request: URLRequest
 
-    init(serverName: String, port: Int, endpoint: String) {
-        let resourceString = "http://\(serverName):\(port)/\(endpoint)"
-        guard let resourceURL = URL(string: resourceString) else { fatalError() }
-
-        self.request = URLRequest(url: resourceURL)
-        self.request.timeoutInterval = 5
-    }
+//    init(serverName: String, port: Int, endpoint: String) {
+//        let resourceString = "http://\(serverName):\(port)/\(endpoint)"
+//        guard let resourceURL = URL(string: resourceString) else { fatalError() }
+//
+//        self.request = URLRequest(url: resourceURL)
+//        self.request.timeoutInterval = 5
+//    }
 
     init(url: URL) {
         self.request = URLRequest(url: url)
