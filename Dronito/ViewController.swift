@@ -54,8 +54,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             communicationSettings.type = .HTTP
             break
         case 1:
-            print("socket")
-            //communicationSettings.type = .WebSocket
+            communicationSettings.type = .WebSocket
             break
         default:
             break
