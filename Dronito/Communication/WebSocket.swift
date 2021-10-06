@@ -53,10 +53,11 @@ class WebSocketCommunication: CommunicationProtocol {
     
     func send(content: Message, completion: @escaping (Result<Message, CommunicationError>) -> Void) {
         do {
-            let jsonData = try JSONEncoder().encode(content)
-            guard let json = String(data: jsonData, encoding: String.Encoding.utf16) else { completion(.failure(.encodingError)) ; return}
+//            let jsonData = try JSONEncoder().encode(content)
+//            guard let json = String(data: jsonData, encoding: String.Encoding.utf16) else { completion(.failure(.encodingError)) ; return}
             
-            let message = URLSessionWebSocketTask.Message.string(json)
+            let str = String(content.value)
+            let message = URLSessionWebSocketTask.Message.string(str)
             webSocketTask.send(message) { error in
                 if let _ = error {
                     completion(.failure(.sendingError))
@@ -66,10 +67,11 @@ class WebSocketCommunication: CommunicationProtocol {
                 completion(.success(content))
             }
             
-        } catch {
-            completion(.failure(.encodingError))
-            return
         }
+//        catch {
+//            completion(.failure(.encodingError))
+//            return
+//        }
         
     }
     
