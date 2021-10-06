@@ -23,6 +23,7 @@ class Communication {
     
     func connect() {
         if settings.type == .WebSocket {
+            socket = WebSocketCommunication()
             socket?.connect()
         }
     }
@@ -41,7 +42,6 @@ class Communication {
         
         switch self.settings.type {
         case .HTTP:
-            socket?.disconnect()
             http?.resourceURL = url
             http?.send(content: content, completion: { result in
                 switch result {

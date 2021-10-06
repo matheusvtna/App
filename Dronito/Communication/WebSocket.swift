@@ -11,8 +11,8 @@ class WebSocketCommunication: CommunicationProtocol {
     
     let settings = CommunicationSettings.shared
     var webSocketTask: URLSessionWebSocketTask
-    var isAlive: Bool?
     private var pingTimer: Timer?
+    var isAlive: Bool?
     
     init() {
         let url = URL(string: settings.url)
@@ -36,6 +36,8 @@ class WebSocketCommunication: CommunicationProtocol {
     
     func connect() {
         var url = URL(string: settings.url)
+        
+        // MUDA ESSA URL PARA O TEU IP:PORT/ENDPOINT
         url = URL(string: "wss://echo.websocket.org")
         webSocketTask = URLSession.shared.webSocketTask(with: url!)
         webSocketTask.resume()
