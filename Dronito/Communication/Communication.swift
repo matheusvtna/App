@@ -8,12 +8,29 @@
 import Foundation
 
 class Communication {
-    var settings: CommunicationSettings
+
+    var settings = CommunicationSettings.shared
+    var messages = DataManager.shared
     var socket: WebSocketCommunication?
     var http: HTTPCommunication?
     
-    init(settings: CommunicationSettings) {
-        self.settings = settings        
+    static let shared: Communication = {
+        let instance = Communication()
+        return instance
+    }()
+    
+    init() {}
+    
+    func connect() {
+        if settings.type == .WebSocket {
+            socket?.connect()
+        }
+    }
+    
+    func disconnect() {
+        if settings.type == .HTTP {
+            socket?.disconnect()
+        }
     }
     
     func send(content: Message) {
@@ -24,7 +41,7 @@ class Communication {
         
         switch self.settings.type {
         case .HTTP:
-            socket?.close()
+            socket?.disconnect()
             http?.resourceURL = url
             http?.send(content: content, completion: { result in
                 switch result {
@@ -37,7 +54,6 @@ class Communication {
             })
 
         case .WebSocket:
-            socket = WebSocketCommunication(url: url)
             socket?.send(content: content, completion: { result in
                 switch result{
                 case .success(let message):
@@ -45,10 +61,8 @@ class Communication {
 
                 case .failure(let error):
                     print("An error occured on send: \(error)")
-
                 }                
             })
-
         }
     }
     
@@ -69,12 +83,10 @@ class Communication {
                 case .failure(let error):
                     print("An error occured on HTTP receive: \(error)")
                 }
-                
             })
             
         case .WebSocket:
-            let socket = WebSocketCommunication(url: url)
-            socket.receive(completion: { result in
+            socket?.receive(completion: { result in
                 switch result {
                 case .success(let message):
                     print("The following message has been received: \(message.value) through WebSocket")
@@ -82,14 +94,13 @@ class Communication {
                 case .failure(let error):
                     print("An error occured on WebSocket receive: \(error)")
                 }})
-
         }
     }
     
     func isAlive() -> Bool {
         switch self.settings.type {
         case .HTTP:
-            if let _ = NSURL(string: settings.url ) {
+            if let _ = NSURL(string: settings.url) {
                 return true
             }
             return false

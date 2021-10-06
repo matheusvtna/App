@@ -7,40 +7,17 @@
 
 import Foundation
 
-class WebSocket: NSObject, URLSessionWebSocketDelegate {
-    
-    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
-        print("Web Socket did connect")
-    }
-    
-    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
-        print("Web Socket did disconnect")
-    }
-}
-
 class WebSocketCommunication: CommunicationProtocol {
     
-    //var request: URLRequest
-    
+    let settings = CommunicationSettings.shared
     var webSocketTask: URLSessionWebSocketTask
     var isAlive: Bool?
-
-    //    init(serverName: String, port: Int, endpoint: String) {
-    //        let resourceString = "http://\(serverName):\(port)/\(endpoint)"
-    //        guard let resourceURL = URL(string: resourceString) else { fatalError() }
-    //
-    //        self.request = URLRequest(url: resourceURL)
-    //        self.request.timeoutInterval = 5
-    //    }
+    private var pingTimer: Timer?
     
-    init(url: URL) {
-        let webSocketDelegate = WebSocket()
-        let session = URLSession(configuration: .default, delegate: webSocketDelegate, delegateQueue: OperationQueue())
+    init() {
+        let url = URL(string: settings.url)
+        webSocketTask = URLSession.shared.webSocketTask(with: url!)
         isAlive = false
-        
-        webSocketTask = session.webSocketTask(with: url)
-        webSocketTask.resume()
-        ping()
     }
     
     func ping() {
@@ -50,17 +27,26 @@ class WebSocketCommunication: CommunicationProtocol {
             } else {
                 print("Web Socket connection is alive")
                 self.isAlive = true
-                DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
+                self.pingTimer = Timer.scheduledTimer(withTimeInterval: 25.0, repeats: true) { time in
                     self.ping()
                 }
             }
         }
     }
     
-    func close() {
+    func connect() {
+        var url = URL(string: settings.url)
+        url = URL(string: "wss://echo.websocket.org")
+        webSocketTask = URLSession.shared.webSocketTask(with: url!)
+        webSocketTask.resume()
+        ping()
+    }
+    
+    func disconnect() {
         let reason = "Closing connection".data(using: .utf8)
         webSocketTask.cancel(with: .goingAway, reason: reason)
-        self.isAlive = false
+        isAlive = false
+        pingTimer?.invalidate()
     }
     
     func send(content: Message, completion: @escaping (Result<Message, CommunicationError>) -> Void) {
