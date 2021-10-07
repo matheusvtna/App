@@ -163,6 +163,69 @@
             </objects>
             <point key="canvasLocation" x="-26.086956521739133" y="134.59821428571428"/>
         </scene>
+        <!--Web View Controller-->
+        <scene sceneID="UZL-pa-cyE">
+            <objects>
+                <viewController storyboardIdentifier="WebViewController" id="N2V-9a-Yi2" customClass="WebViewController" customModule="Dronito" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="w3u-Iu-UkR">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d7V-i1-yQM">
+                                <rect key="frame" x="165" y="314" width="84" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="On"/>
+                                <connections>
+                                    <action selector="writeTextON" destination="N2V-9a-Yi2" eventType="touchUpInside" id="tO9-PI-2sx"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dB7-qf-Qkn">
+                                <rect key="frame" x="165" y="371" width="84" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="Off"/>
+                                <connections>
+                                    <action selector="writeTextOFF" destination="N2V-9a-Yi2" eventType="touchUpInside" id="DNz-Ps-gMt"/>
+                                </connections>
+                            </button>
+                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="PfG-iz-5gJ">
+                                <rect key="frame" x="47" y="566" width="321" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="sliderValueChanged" destination="N2V-9a-Yi2" eventType="valueChanged" id="0nk-a0-oCM"/>
+                                </connections>
+                            </slider>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1z2-16-zoI">
+                                <rect key="frame" x="165" y="638" width="82" height="24"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Fu-cn-9m2">
+                                <rect key="frame" x="148" y="433" width="119" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="gray" title="Connect"/>
+                                <connections>
+                                    <action selector="disconnect" destination="N2V-9a-Yi2" eventType="touchUpInside" id="MhS-pK-bA6"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="rlP-sW-MG4"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <connections>
+                        <outlet property="actuactorSlider" destination="PfG-iz-5gJ" id="Yi5-1G-J8h"/>
+                        <outlet property="connectButton" destination="2Fu-cn-9m2" id="fs4-pE-M1J"/>
+                        <outlet property="percentageLabel" destination="1z2-16-zoI" id="c2g-Yy-zNY"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ren-j6-ZWO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="860.86956521739137" y="134.59821428571428"/>
+        </scene>
     </scenes>
     <resources>
         <systemColor name="systemBackgroundColor">
