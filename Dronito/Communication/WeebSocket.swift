@@ -7,7 +7,7 @@
 
 import Foundation
 
-class WebSocket: NSObject, URLSessionWebSocketDelegate {
+class WeebSocket: NSObject, URLSessionWebSocketDelegate {
     
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
         print("Web Socket did connect")
@@ -34,7 +34,7 @@ class WebSocketCommunication: CommunicationProtocol {
     //    }
     
     init(url: URL) {
-        let webSocketDelegate = WebSocket()
+        let webSocketDelegate = WeebSocket()
         let session = URLSession(configuration: .default, delegate: webSocketDelegate, delegateQueue: OperationQueue())
         isAlive = false
         
