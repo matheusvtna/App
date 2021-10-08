@@ -39,23 +39,46 @@ class CommunicationSettingsController: UIViewController, UITextFieldDelegate  {
         
         let typeIndex = defaults.object(forKey: "commType") as? Int ?? commTypeControl.selectedSegmentIndex
         commTypeControl.selectedSegmentIndex = typeIndex
+     
+        commStatusLabel.text = "No connection started yet"
+        commStatusLabel.textColor = .lightGray
+        
         
     }
     
     @IBAction func connectClicked() {
         connected = !connected
         
-        print("connected: \(connected)")
-        
         if connected {
             communication.connect()
             connectButton.setTitle("DISCONNECT", for: .normal)
         } else {
             communication.disconnect()
-            connectButton.setTitle("CONNECT", for: .normal)        }
+            connectButton.setTitle("CONNECT", for: .normal)
+        }
         
+        setupCommunicationSettings()
+        setupConnectionLabel()
+        saveUserDefaults()
+        
+        ipTextField.isEnabled = !connected
+        portTextField.isEnabled = !connected
+        endpointTextField.isEnabled = !connected
+        commTypeControl.isEnabled = !connected
+    }
+    
+    func setupCommunicationSettings() {
+        let typeIndex = commTypeControl.selectedSegmentIndex
+        
+        settings.serverName = ipTextField.text ?? ""
+        settings.port = (portTextField.text! as NSString).integerValue
+        settings.endpoint = endpointTextField.text ?? ""
+        settings.type = CommunicationType.init(rawValue: typeIndex)!
+    }
+    
+    func setupConnectionLabel() {
         var text = ""
-        if communication.isAlive() {
+        if communication.isConnected {
             text += "Connected on:\n\(settings.url)"
             commStatusLabel.textColor = .green
         } else {
@@ -66,7 +89,19 @@ class CommunicationSettingsController: UIViewController, UITextFieldDelegate  {
         let type = settings.type == .HTTP ? "HTTP" : "WebSocket"
         text += "\n\nSending through " + type
         commStatusLabel.text = text
-        
     }
     
+    func saveUserDefaults() {
+        let defaults = UserDefaults.standard
+        
+        let ip: String = ipTextField.text ?? "localhost"
+        let port: Int = Int(portTextField.text ?? "80") ?? 80
+        let endpoint:String = endpointTextField.text ?? ""
+        let type: CommunicationType = CommunicationType.init(rawValue: commTypeControl.selectedSegmentIndex)!
+        
+        defaults.set(ip, forKey: "commServer")
+        defaults.set(port, forKey: "commPort")
+        defaults.set(endpoint, forKey: "commEndpoint")
+        defaults.set(type.rawValue, forKey: "commType")
+    }
 }

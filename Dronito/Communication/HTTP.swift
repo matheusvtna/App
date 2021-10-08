@@ -7,7 +7,7 @@
 
 import Foundation
 
-class HTTPCommunication: CommunicationProtocol {
+class HTTPCommunication {
     
     var resourceURL: URL
     var isAlive: Bool?
@@ -23,7 +23,6 @@ class HTTPCommunication: CommunicationProtocol {
         self.resourceURL = url
     }
     
-    // using protocol -> remove "override" keyword
     func send(content: Message, completion: @escaping (Result<Message, CommunicationError>) -> Void) {
         
         // Create POST request
@@ -83,37 +82,5 @@ class HTTPCommunication: CommunicationProtocol {
             task.resume()
         }
     }
-    
-//    class func getRequest(url: String, completion: @escaping ([String:Any]?, Error? ) -> Void) {
-//        guard let URL = URL(string: url) else {
-//            completion(nil, nil)
-//            return
-//        }
-//
-//        let request = NSMutableURLRequest(url: URL)
-//        request.httpMethod = "GET"
-//
-//        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-//            (data, response, error) in
-//            do {
-//
-//                if let data = data {
-//                    //Response came
-//                    let response = try JSONSerialization.jsonObject(with: data, options: [])
-//                    completion(response as? [String : Any], nil)
-//                }
-//                else {
-//                    //There was not a response
-//                    completion(nil, nil)
-//                }
-//            } catch let error as NSError {
-//                // Communication Error between server
-//                completion(nil, error)
-//            }
-//        }
-//
-//        task.resume()
-//    }
-    
     
 }

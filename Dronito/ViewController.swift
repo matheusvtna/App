@@ -140,7 +140,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     func checkURL() {
         let comm = Communication.shared
-        let canOpen = comm.isAlive()
+        let canOpen = comm.isConnected
         
         var text = ""
         if canOpen {

@@ -6,13 +6,15 @@
 //
 
 import Foundation
+import Starscream
 
-class Communication {
-
+class Communication: WebSocketDelegate {
     var settings = CommunicationSettings.shared
     var messages = DataManager.shared
+    
     var socket: WebSocketCommunication?
     var http: HTTPCommunication?
+    var isConnected: Bool = false
     
     static let shared: Communication = {
         let instance = Communication()
@@ -22,27 +24,24 @@ class Communication {
     init() {}
     
     func connect() {
-        if settings.type == .WebSocket {
+        switch settings.type {
+        case .HTTP:
+            isConnected = true
+            http?.resourceURL = URL(string: settings.url)!
+        case .WebSocket:
             socket?.connect()
         }
     }
     
     func disconnect() {
-        if settings.type == .HTTP {
+        if settings.type == .WebSocket {
             socket?.disconnect()
         }
     }
     
     func send(content: Message) {
-        guard let url = URL(string: settings.url) else {
-            print("Invalid URL from: \(settings.url)")
-            return
-        }
-        
-        switch self.settings.type {
+        switch settings.type {
         case .HTTP:
-            socket?.disconnect()
-            http?.resourceURL = url
             http?.send(content: content, completion: { result in
                 switch result {
                 case .success(let message):
@@ -52,30 +51,17 @@ class Communication {
                     print("An error occured on send: \(error)")
                 }
             })
-
+            
         case .WebSocket:
-            socket?.send(content: content, completion: { result in
-                switch result{
-                case .success(let message):
-                    print("The following message has been sent: \(message.value) through WebSocket")
-
-                case .failure(let error):
-                    print("An error occured on send: \(error)")
-                }                
-            })
+            socket?.send(content: content, completion: {_ in })
+            break
         }
     }
     
     func receive() {
-        guard let url = URL(string: settings.url) else {
-            print("Invalid URL from: \(settings.url)")
-            return
-        }
-        
-        switch self.settings.type {
+        switch settings.type {
         case .HTTP:
-            let http = HTTPCommunication(url: url)
-            http.receive(completion: { result in
+            http?.receive(completion: { result in
                 switch result {
                 case .success(let message):
                     print("The following message has been received: \(message.value) through HTTP")
@@ -86,34 +72,52 @@ class Communication {
             })
             
         case .WebSocket:
-            socket?.receive(completion: { result in
-                switch result {
-                case .success(let message):
-                    print("The following message has been received: \(message.value) through WebSocket")
-                    
-                case .failure(let error):
-                    print("An error occured on WebSocket receive: \(error)")
-                }})
+            if !isConnected {
+                socket?.connect()
+            }
+            break
         }
     }
     
-    func isAlive() -> Bool {
-        switch self.settings.type {
-        case .HTTP:
-            if let _ = NSURL(string: settings.url) {
-                return true
-            }
-            return false
-        case .WebSocket:
-            return socket?.isAlive ?? false
+    func didReceive(event: WebSocketEvent, client: WebSocket) {
+        switch event {
+        case .connected(let headers):
+            isConnected = true
+            print("websocket is connected: \(headers)")
+        case .disconnected(let reason, let code):
+            isConnected = false
+            print("websocket is disconnected: \(reason) with code: \(code)")
+        case .text(let string):
+            print("Received text: \(string)")
+        case .binary(let data):
+            print("Received data: \(data.count)")
+        case .ping(_):
+            break
+        case .pong(_):
+            break
+        case .viabilityChanged(_):
+            break
+        case .reconnectSuggested(_):
+            break
+        case .cancelled:
+            isConnected = false
+        case .error(let error):
+            isConnected = false
+            handleError(error)
+        }
+        
+    }
+    
+    func handleError(_ error: Error?) {
+        if let e = error as? WSError {
+            print("websocket encountered an error: \(e.message)")
+        } else if let e = error {
+            print("websocket encountered an error: \(e.localizedDescription)")
+        } else {
+            print("websocket encountered an error")
         }
     }
-}
-
-protocol CommunicationProtocol {
-    var isAlive: Bool? { get }
-    func send(content: Message, completion: @escaping(Result<Message, CommunicationError>) -> Void);
-    func receive(completion: @escaping(Result<Message, CommunicationError>) -> Void);
+    
 }
 
 enum CommunicationError: Error {
