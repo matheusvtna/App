@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //guard let _ = (scene as? UIWindowScene) else { return }
         if let windowScene = scene as? UIWindowScene {
                 let window = UIWindow(windowScene: windowScene)
-                let storyboard = UIStoryboard.init(name: "Settings", bundle: nil)
+                let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
                 let viewController = storyboard.instantiateViewController(withIdentifier: "CommunicationSettings") as! CommunicationSettingsController
                 window.rootViewController = viewController
                 self.window = window

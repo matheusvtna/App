@@ -39,23 +39,16 @@ class CommunicationSettingsController: UIViewController, UITextFieldDelegate  {
         
         let typeIndex = defaults.object(forKey: "commType") as? Int ?? commTypeControl.selectedSegmentIndex
         commTypeControl.selectedSegmentIndex = typeIndex
-     
+        
         commStatusLabel.text = "No connection started yet"
         commStatusLabel.textColor = .lightGray
-        
-        
     }
     
     @IBAction func connectClicked() {
-        connected = !connected
         
-        if connected {
-            communication.connect()
-            connectButton.setTitle("DISCONNECT", for: .normal)
-        } else {
-            communication.disconnect()
-            connectButton.setTitle("CONNECT", for: .normal)
-        }
+        communication.connect()
+        let actuatorView = storyboard?.instantiateViewController(identifier: "ActuatorViewController") as! ActuatorViewController
+        self.present(actuatorView, animated: true, completion: nil)
         
         setupCommunicationSettings()
         setupConnectionLabel()

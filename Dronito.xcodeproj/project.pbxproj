@@ -18,10 +18,9 @@
 		3E28E5BE2705D9D000A8F58C /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E28E5BD2705D9D000A8F58C /* WebSocket.swift */; };
 		3E28E5C22705FB4200A8F58C /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E28E5C12705FB4200A8F58C /* Settings.swift */; };
 		3E28E5C42705FFFB00A8F58C /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E28E5C32705FFFB00A8F58C /* Message.swift */; };
-		3E2FAD32270DCA5F00CA2FD2 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E2FAD31270DCA5F00CA2FD2 /* Settings.storyboard */; };
 		3E2FAD34270DCBD900CA2FD2 /* CommunicationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2FAD33270DCBD900CA2FD2 /* CommunicationSettings.swift */; };
 		3E2FAD39270DD6BA00CA2FD2 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2FAD38270DD6BA00CA2FD2 /* DataManager.swift */; };
-		57B00144270DE00700A10F22 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B00143270DE00700A10F22 /* WebViewController.swift */; };
+		57B00144270DE00700A10F22 /* ActuatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B00143270DE00700A10F22 /* ActuatorViewController.swift */; };
 		79759612200DB10CAAA1A534 /* Pods_Dronito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFC3D6CC773308EDA8EB065C /* Pods_Dronito.framework */; };
 /* End PBXBuildFile section */
 
@@ -39,10 +38,9 @@
 		3E28E5BD2705D9D000A8F58C /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		3E28E5C12705FB4200A8F58C /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		3E28E5C32705FFFB00A8F58C /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		3E2FAD31270DCA5F00CA2FD2 /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		3E2FAD33270DCBD900CA2FD2 /* CommunicationSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicationSettings.swift; sourceTree = "<group>"; };
 		3E2FAD38270DD6BA00CA2FD2 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
-		57B00143270DE00700A10F22 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		57B00143270DE00700A10F22 /* ActuatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActuatorViewController.swift; sourceTree = "<group>"; };
 		5FFC752F16B1F312610DDC6C /* Pods-Dronito.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dronito.release.xcconfig"; path = "Target Support Files/Pods-Dronito/Pods-Dronito.release.xcconfig"; sourceTree = "<group>"; };
 		BFC3D6CC773308EDA8EB065C /* Pods_Dronito.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Dronito.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA9C19B27CCEE9AD252124E9 /* Pods-Dronito.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dronito.debug.xcconfig"; path = "Target Support Files/Pods-Dronito/Pods-Dronito.debug.xcconfig"; sourceTree = "<group>"; };
@@ -85,12 +83,11 @@
 				3E05FEAF26FE047B00A8FEBE /* AppDelegate.swift */,
 				3E05FEB126FE047B00A8FEBE /* SceneDelegate.swift */,
 				3E05FEB326FE047B00A8FEBE /* ViewController.swift */,
-				57B00143270DE00700A10F22 /* WebViewController.swift */,
+				57B00143270DE00700A10F22 /* ActuatorViewController.swift */,
 				3E05FEB526FE047B00A8FEBE /* Main.storyboard */,
 				3E05FEB826FE047D00A8FEBE /* Assets.xcassets */,
 				3E05FEBA26FE047D00A8FEBE /* LaunchScreen.storyboard */,
 				3E05FEBD26FE047D00A8FEBE /* Info.plist */,
-				3E2FAD31270DCA5F00CA2FD2 /* Settings.storyboard */,
 				3E2FAD33270DCBD900CA2FD2 /* CommunicationSettings.swift */,
 				3E2FAD38270DD6BA00CA2FD2 /* DataManager.swift */,
 			);
@@ -186,7 +183,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E2FAD32270DCA5F00CA2FD2 /* Settings.storyboard in Resources */,
 				3E05FEBC26FE047D00A8FEBE /* LaunchScreen.storyboard in Resources */,
 				3E05FEB926FE047D00A8FEBE /* Assets.xcassets in Resources */,
 				3E05FEB726FE047B00A8FEBE /* Main.storyboard in Resources */,
@@ -243,7 +239,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E05FEC426FE07FE00A8FEBE /* HTTP.swift in Sources */,
-				57B00144270DE00700A10F22 /* WebViewController.swift in Sources */,
+				57B00144270DE00700A10F22 /* ActuatorViewController.swift in Sources */,
 				3E2FAD39270DD6BA00CA2FD2 /* DataManager.swift in Sources */,
 				3E28E5BC2705D5E800A8F58C /* Communication.swift in Sources */,
 				3E28E5BE2705D9D000A8F58C /* WebSocket.swift in Sources */,
