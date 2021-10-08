@@ -112,7 +112,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.percentageLabel.text = "\(value) %"
         
         let message = Message(value: value)
-        let api = Communication(settings: communicationSettings)
+        let api = Communication.shared
         api.send(content: message)
         
     }
@@ -139,7 +139,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 //    }
     
     func checkURL() {
-        let comm = Communication(settings: communicationSettings)
+        let comm = Communication.shared
         let canOpen = comm.isAlive()
         
         var text = ""
