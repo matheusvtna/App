@@ -27,8 +27,9 @@ class Communication: WebSocketDelegate {
         switch settings.type {
         case .HTTP:
             isConnected = true
-            http?.resourceURL = URL(string: settings.url)!
+            http = HTTPCommunication(url: URL(string: settings.url)!)    
         case .WebSocket:
+            socket = WebSocketCommunication(url: settings.url)
             socket?.connect()
         }
     }

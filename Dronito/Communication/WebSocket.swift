@@ -16,6 +16,7 @@ class WebSocketCommunication {
     init(url: String) {
         request = URLRequest(url: URL(string: url)!) // "ws://10.0.0.175:88/"
         request.timeoutInterval = 5
+        socket = WebSocket(request: request)
         socket.delegate = Communication.shared
     }
     
