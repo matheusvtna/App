@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let windowScene = scene as? UIWindowScene {
                 let window = UIWindow(windowScene: windowScene)
                 let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
-                let viewController = storyboard.instantiateViewController(withIdentifier: "WebViewController") as! WebViewController
+                let viewController = storyboard.instantiateViewController(withIdentifier: "Joystickinho") as! JoystickViewController
                 window.rootViewController = viewController
                 self.window = window
                 window.makeKeyAndVisible()
